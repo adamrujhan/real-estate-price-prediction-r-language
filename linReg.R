@@ -76,7 +76,7 @@ ggplot(df_scatter, aes(x = value, y = Price)) +
 
 
 # ----------------------------
-# 3. Model Planning and Development 
+# 4. Model Planning and Development 
 
 cat(rep("=", 60), "\n")
 cat("MODEL PLANNING AND DEVELOPMENT\n")
