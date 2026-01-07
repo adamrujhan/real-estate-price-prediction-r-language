@@ -4,7 +4,6 @@
 if(!require(ggplot2)) install.packages("ggplot2"); library(ggplot2)
 if(!require(dplyr)) install.packages("dplyr"); library(dplyr)
 if(!require(caret)) install.packages("caret"); library(caret)
-if(!require(corrplot)) install.packages("corrplot"); library(corrplot)
 if(!require(reshape2)) install.packages("reshape2"); library(reshape2)
 
 
@@ -23,6 +22,14 @@ cat(rep("=", 60), "\n")
 cat("DATA PREPARATION and EXPLORATORY DATA ANALYSIS (EDA)\n")
 cat(rep("=", 60), "\n")
 
+# Dataset overview
+cat("\n=== Dataset Overview ===\n")
+cat("Rows:", nrow(df), "\n")
+cat("Columns:", ncol(df), "\n")
+cat("\nData types:\n")
+print(sapply(df, class))
+print(summary(df))
+
 # Remove ID column not useful for modeling
 df$ID  <- NULL
 
@@ -31,17 +38,6 @@ cat("\n=== Data Check ===\n")
 cat("Missing values:", sum(is.na(df)), "\n")
 cat("Duplicate rows:", sum(duplicated(df)), "\n")
 
-# Dataset overview
-cat("\n=== Dataset Overview ===\n")
-cat("Rows:", nrow(df), "\n")
-cat("Columns:", ncol(df), "\n")
-cat("\nData types:\n")
-print(sapply(df, class))
-
-# Statistical summary
-cat("\n=== Statistical Summary ===\n")
-print(summary(df))
-
 # Use long format by select column
 df_long <- melt(df, measure.vars = names(df)[])
 
@@ -49,17 +45,20 @@ df_long <- melt(df, measure.vars = names(df)[])
 ggplot(df_long, aes(x = variable, y = value)) +
   geom_boxplot() +
   facet_wrap(~ variable, scales = "free") +
-  theme_minimal()
+  theme_minimal()+
+  labs(title = "Boxplot",
+       x = "Feature")
 
-# Histograms with density 
+# Histograms and Density Plot
 ggplot(df_long, aes(x = value)) +
   geom_histogram(aes(y = after_stat(density)), color = "white") +
   geom_density() +
   facet_wrap(~ variable, scales = "free") +
   theme_minimal() +
-  labs(title = "Histogram & Density Plot of All Features")
+  labs(title = "Histogram & Density Plot",
+       x = "Feature Value")
 
-# Scatter Plot vs price
+# Scatter Plot
 df_scatter <- melt(df,
                    id.vars = "Price",
                    measure.vars = setdiff(names(df), "Price"))
@@ -69,7 +68,7 @@ ggplot(df_scatter, aes(x = value, y = Price)) +
   facet_wrap(~ variable, scales = "free_x") +
   theme_minimal() +
   labs(
-    title = "Scatter Plot of Features vs Price with Linear Fit",
+    title = "Scatter Plot of Features vs Price",
     x = "Feature Value",
     y = "Price"
   )
